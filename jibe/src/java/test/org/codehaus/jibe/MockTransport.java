@@ -9,12 +9,14 @@ public class MockTransport
     private List registered;
     private List unregistered;
     private List distributed;
+    private List outcomes;
 
     public MockTransport()
     {
         this.registered = new ArrayList();
         this.unregistered = new ArrayList();
         this.distributed = new ArrayList();
+        this.outcomes = new ArrayList();
     }
 
     public void register(JibeSession session)
@@ -46,9 +48,20 @@ public class MockTransport
         this.distributed.add( proposal );
     }
 
+    public void distribute(Outcome outcome)
+        throws TransportException
+    {
+        this.outcomes.add( outcome );
+    }
+
     public Proposal[] getDistributed()
     {
         return (Proposal[]) this.distributed.toArray( Proposal.EMPTY_ARRAY );
+    }
+
+    public Outcome[] getOutcomes()
+    {
+        return (Outcome[]) this.outcomes.toArray( Outcome.EMPTY_ARRAY );
     }
 
 

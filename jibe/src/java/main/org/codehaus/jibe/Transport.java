@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: Transport.java,v 1.1.1.1 2003-06-26 04:27:52 bob Exp $
+ $Id: Transport.java,v 1.2 2003-06-26 13:56:52 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -53,7 +53,7 @@ package org.codehaus.jibe;
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: Transport.java,v 1.1.1.1 2003-06-26 04:27:52 bob Exp $
+ *  @version $Id: Transport.java,v 1.2 2003-06-26 13:56:52 bob Exp $
  */
 public interface Transport
 {
@@ -103,5 +103,8 @@ public interface Transport
     void respond(Solicitation solicitation,
                  int status,
                  Object responsePaylod)
+        throws TransportException;
+
+    void distribute(Outcome outcome)
         throws TransportException;
 }

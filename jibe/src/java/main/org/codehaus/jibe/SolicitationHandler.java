@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: SolicitationHandler.java,v 1.1.1.1 2003-06-26 04:27:54 bob Exp $
+ $Id: SolicitationHandler.java,v 1.2 2003-06-26 13:56:52 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -53,7 +53,7 @@ package org.codehaus.jibe;
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: SolicitationHandler.java,v 1.1.1.1 2003-06-26 04:27:54 bob Exp $
+ *  @version $Id: SolicitationHandler.java,v 1.2 2003-06-26 13:56:52 bob Exp $
  */
 public interface SolicitationHandler
 {
@@ -66,4 +66,6 @@ public interface SolicitationHandler
      */
     void handle(Solicitation solicitation)
         throws Exception;
+
+    void handle(Outcome outcome);
 }
