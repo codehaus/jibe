@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: JibeSessionFactory.java,v 1.1.1.1 2003-06-26 04:27:53 bob Exp $
+ $Id: JibeSessionFactory.java,v 1.2 2003-07-01 19:13:18 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -48,13 +48,16 @@ package org.codehaus.jibe;
 
 import java.util.Properties;
 
+import java.util.Map;
+import java.util.HashMap;
+
 /** Abstract factory for <code>JibeSession</code> instances.
  *
  *  @see JibeSession
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: JibeSessionFactory.java,v 1.1.1.1 2003-06-26 04:27:53 bob Exp $
+ *  @version $Id: JibeSessionFactory.java,v 1.2 2003-07-01 19:13:18 bob Exp $
  */
 public abstract class JibeSessionFactory
 {
@@ -64,6 +67,11 @@ public abstract class JibeSessionFactory
 
     /** <code>JibeSessionFactory</code> implementation configuration property. */
     public static final String SESSION_FACTORY_PROPERTY = JibeSessionFactory.class.getName();
+
+    /** <code>JibeSessionFactory</code> instance name property. */
+    public static final String FACTORY_NAME_PROPERTY = "jibe.factory.name";
+
+    private static final Map factories = new HashMap();
 
     /** Transport used by the factory. */
     private Transport transport;
@@ -161,52 +169,78 @@ public abstract class JibeSessionFactory
     public static final JibeSessionFactory newSessionFactory(Properties properties)
         throws SessionFactoryException
     {
-        //return new JibeSessionFactory( properties );
-
-        String factoryClassName = properties.getProperty( SESSION_FACTORY_PROPERTY );
-
-        if ( factoryClassName == null
-             ||
-             factoryClassName.trim().equals( "" ) )
-        {
-            throw new SessionFactoryException( "property " + SESSION_FACTORY_PROPERTY + " not set" );
-        }
-
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-
-        if ( cl == null )
-        {
-            cl = JibeSessionFactory.class.getClassLoader();
-        }
+        String factoryName = properties.getProperty( FACTORY_NAME_PROPERTY );
 
         JibeSessionFactory factory = null;
 
-        try
+        if ( factoryName != null )
         {
-            Class factoryClass = cl.loadClass( factoryClassName );
+            factory = lookupFactory( properties.getProperty( FACTORY_NAME_PROPERTY ) );
+        }
 
-            if ( ! JibeSessionFactory.class.isAssignableFrom( factoryClass ) )
+        if ( factory == null )
+        {
+            String factoryClassName = properties.getProperty( SESSION_FACTORY_PROPERTY );
+
+            if ( factoryClassName == null
+                 ||
+                 factoryClassName.trim().equals( "" ) )
             {
-                throw new SessionFactoryException( factoryClass.getName() + " is not a subclass of JibeSessionFactory" );
+                throw new SessionFactoryException( "property " + SESSION_FACTORY_PROPERTY + " not set" );
+            }
+            
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            
+            if ( cl == null )
+            {
+                cl = JibeSessionFactory.class.getClassLoader();
+            }
+            
+            try
+            {
+                Class factoryClass = cl.loadClass( factoryClassName );
+                
+                if ( ! JibeSessionFactory.class.isAssignableFrom( factoryClass ) )
+                {
+                    throw new SessionFactoryException( factoryClass.getName() + " is not a subclass of JibeSessionFactory" );
+                }
+                
+                factory = (JibeSessionFactory) factoryClass.newInstance();
+                
+                factory.internalInitializeTransport( properties );
+            }
+            catch (ClassNotFoundException e)
+            {
+                throw new SessionFactoryException( e );
+            }
+            catch (InstantiationException e)
+            {
+                throw new SessionFactoryException( e );
+            }
+            catch (IllegalAccessException e)
+            {
+                throw new SessionFactoryException( e );
             }
 
-            factory = (JibeSessionFactory) factoryClass.newInstance();
-
-            factory.internalInitializeTransport( properties );
-        }
-        catch (ClassNotFoundException e)
-        {
-            throw new SessionFactoryException( e );
-        }
-        catch (InstantiationException e)
-        {
-            throw new SessionFactoryException( e );
-        }
-        catch (IllegalAccessException e)
-        {
-            throw new SessionFactoryException( e );
+            if ( factoryName != null )
+            {
+                registerFactory( factoryName,
+                                 factory );
+            }
         }
 
         return factory;
+    }
+
+    protected static void registerFactory(String name,
+                                          JibeSessionFactory factory)
+    {
+        factories.put( name,
+                       factory );
+    }
+
+    protected static JibeSessionFactory lookupFactory(String name)
+    {
+        return (JibeSessionFactory) factories.get( name );
     }
 }

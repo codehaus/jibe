@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: InProgressProposal.java,v 1.2 2003-06-26 13:56:52 bob Exp $
+ $Id: InProgressProposal.java,v 1.3 2003-07-01 19:13:18 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -52,7 +52,7 @@ package org.codehaus.jibe;
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: InProgressProposal.java,v 1.2 2003-06-26 13:56:52 bob Exp $
+ *  @version $Id: InProgressProposal.java,v 1.3 2003-07-01 19:13:18 bob Exp $
  */
 class InProgressProposal
     implements ResponseHandler
@@ -79,6 +79,9 @@ class InProgressProposal
     /** Termination state flag. */
     private boolean terminated;
 
+    /** Timeout. */
+    private long timeout;
+
     // ----------------------------------------------------------------------
     //     Constructors
     // ----------------------------------------------------------------------
@@ -95,17 +98,54 @@ class InProgressProposal
                        Termination termination,
                        Adjudicator adjudicator)
     {
+        this( session,
+              proposal,
+              termination,
+              adjudicator,
+              -1 );
+    }
+
+    /** Construct.
+     *
+     *  @param session The session.
+     *  @param proposal The proposal.
+     *  @param termination The termination determiner.
+     *  @param adjudicator The outcome adjudicator.
+     *  @param long Timeout.
+     */
+    InProgressProposal(JibeSession session,
+                       Proposal proposal,
+                       Termination termination,
+                       Adjudicator adjudicator,
+                       long timeout)
+    {
         this.session     = session;
         this.proposal    = proposal;
         this.termination = termination;
         this.adjudicator = adjudicator;
         this.responses   = new DefaultResponseSet();
         this.terminated  = false;
+        this.timeout     = timeout;
+
+        registerTimeout();
     }
 
     // ----------------------------------------------------------------------
     //     Instance methods
     // ----------------------------------------------------------------------
+
+    long getTimeout()
+    {
+        return this.timeout;
+    }
+
+    void registerTimeout()
+    {
+        if ( getTimeout() <= 0 )
+        {
+            return;
+        }
+    }
 
     /** Retrieve the <code>JibeSession</code>.
      *

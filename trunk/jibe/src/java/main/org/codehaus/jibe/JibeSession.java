@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: JibeSession.java,v 1.1.1.1 2003-06-26 04:27:52 bob Exp $
+ $Id: JibeSession.java,v 1.2 2003-07-01 19:13:18 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -57,7 +57,7 @@ package org.codehaus.jibe;
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: JibeSession.java,v 1.1.1.1 2003-06-26 04:27:52 bob Exp $
+ *  @version $Id: JibeSession.java,v 1.2 2003-07-01 19:13:18 bob Exp $
  */
 public class JibeSession
 {
@@ -126,6 +126,23 @@ public class JibeSession
                                                                 adjudicator );
         getTransport().distribute( proposal,
                                    inProgress );
+    }
+
+    public void propose(Proposal proposal,
+                        Termination termination,
+                        Adjudicator adjudicator,
+                        long timeout)
+        throws TransportException
+    {
+        InProgressProposal inProgress = new InProgressProposal( this,
+                                                                proposal,
+                                                                termination,
+                                                                adjudicator,
+                                                                timeout );
+
+        getTransport().distribute( proposal,
+                                   inProgress );
+
     }
 
     /** Set the <code>SolicitationHandler</code> to handle
