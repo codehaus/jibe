@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: InProgressProposal.java,v 1.4 2003-07-04 22:42:55 bob Exp $
+ $Id: InProgressProposal.java,v 1.5 2003-07-14 20:23:26 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -52,7 +52,7 @@ package org.codehaus.jibe;
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: InProgressProposal.java,v 1.4 2003-07-04 22:42:55 bob Exp $
+ *  @version $Id: InProgressProposal.java,v 1.5 2003-07-14 20:23:26 bob Exp $
  */
 class InProgressProposal
     implements ResponseHandler
@@ -189,12 +189,10 @@ class InProgressProposal
 
     void handleTimeout()
     {
-        System.err.println( "handleTimeout" );
         synchronized ( this )
         {
             if ( this.terminated )
             {
-                System.err.println( "early terminate" );
                 return;
             }
 
@@ -205,7 +203,6 @@ class InProgressProposal
 
         try
         {
-            System.err.println( "adjudicating" );
             adjudicate();
         }
         catch (TransportException e)
