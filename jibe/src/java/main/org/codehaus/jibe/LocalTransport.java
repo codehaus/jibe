@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: LocalTransport.java,v 1.2 2003-06-26 13:56:52 bob Exp $
+ $Id: LocalTransport.java,v 1.3 2003-07-01 19:13:18 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -56,7 +56,7 @@ import java.util.Iterator;
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: LocalTransport.java,v 1.2 2003-06-26 13:56:52 bob Exp $
+ *  @version $Id: LocalTransport.java,v 1.3 2003-07-01 19:13:18 bob Exp $
  */
 public class LocalTransport
     extends ThreadedTransport
@@ -89,7 +89,7 @@ public class LocalTransport
 
     /** @see Transport
      */
-    public void register(JibeSession session)
+    public synchronized void register(JibeSession session)
         throws TransportException
     {
         this.sessions.add( session );
@@ -97,7 +97,7 @@ public class LocalTransport
 
     /** @see Transport
      */
-    public void unregister(JibeSession session)
+    public synchronized void unregister(JibeSession session)
         throws TransportException
     {
         while ( this.sessions.remove( session ) )
@@ -113,8 +113,8 @@ public class LocalTransport
 
     /** @see Transport
      */
-    public void distribute(Proposal proposal,
-                           ResponseHandler responseHandler)
+    public synchronized void distribute(Proposal proposal,
+                                        ResponseHandler responseHandler)
         throws TransportException
     {
         for ( Iterator sessionIter = this.sessions.iterator();
@@ -139,9 +139,9 @@ public class LocalTransport
 
     /** @see Transport
      */
-    public void respond(Solicitation solicitation,
-                        int status,
-                        Object responsePayload)
+    public synchronized void respond(Solicitation solicitation,
+                                     int status,
+                                     Object responsePayload)
         throws TransportException
     {
         ResponseHandler responseHandler = lookupResponseHandler( solicitation );
@@ -161,7 +161,7 @@ public class LocalTransport
 
     /** @see Transport
      */
-    public void distribute(Outcome outcome)
+    public synchronized void distribute(Outcome outcome)
         throws TransportException
     {
         for ( Iterator sessionIter = this.sessions.iterator();

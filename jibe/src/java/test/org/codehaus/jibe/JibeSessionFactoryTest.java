@@ -67,4 +67,32 @@ public class JibeSessionFactoryTest
             // expected and correct
         }
     }
+
+    public void testFactoryCaching()
+        throws Exception
+    {
+        Properties props = new Properties();
+
+        props.setProperty( JibeSessionFactory.SESSION_FACTORY_PROPERTY,
+                           LocalSessionFactory.class.getName() );
+
+        props.setProperty( JibeSessionFactory.FACTORY_NAME_PROPERTY,
+                           "cheese" );
+
+        JibeSessionFactory factory = JibeSessionFactory.newSessionFactory( props );
+
+        assertNotNull( factory );
+
+        Properties propsToo = new Properties();
+
+        propsToo.setProperty( JibeSessionFactory.FACTORY_NAME_PROPERTY,
+                              "cheese" );
+
+        JibeSessionFactory factoryToo = JibeSessionFactory.newSessionFactory( propsToo );
+
+        assertNotNull( factoryToo );
+
+        assertSame( factory,
+                    factoryToo );
+    }
 }
