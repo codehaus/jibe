@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: DefaultSolicitation.java,v 1.1.1.1 2003-06-26 04:27:56 bob Exp $
+ $Id: DefaultSolicitation.java,v 1.2 2003-07-04 22:42:55 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -50,7 +50,7 @@ package org.codehaus.jibe;
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: DefaultSolicitation.java,v 1.1.1.1 2003-06-26 04:27:56 bob Exp $
+ *  @version $Id: DefaultSolicitation.java,v 1.2 2003-07-04 22:42:55 bob Exp $
  */
 public class DefaultSolicitation
     implements Solicitation
@@ -115,6 +115,7 @@ public class DefaultSolicitation
     {
         setStatus( Response.NORMAL );
         setPayload( payload );
+
         try
         {
             transportResponse();
@@ -132,6 +133,35 @@ public class DefaultSolicitation
         throws ResponseException
     {
         setStatus( Response.ACTIVE_ABSTAIN );
+
+        try
+        {
+            transportResponse();
+        }
+        catch (TransportException e)
+        {
+            throw new ResponseException( getProposal(),
+                                         e );
+        }
+    }
+
+    /** @see Solicitation
+     */
+    public void abstain(Object payload)
+        throws ResponseException
+    {
+        setStatus( Response.ACTIVE_ABSTAIN );
+        setPayload( payload );
+
+        try
+        {
+            transportResponse();
+        }
+        catch (TransportException e)
+        {
+            throw new ResponseException( getProposal(),
+                                         e );
+        }
     }
 
     /** Signal a passive abstinance.
@@ -142,6 +172,16 @@ public class DefaultSolicitation
         throws ResponseException
     {
         setStatus( Response.PASSIVE_ABSTAIN );
+
+        try
+        {
+            transportResponse();
+        }
+        catch (TransportException e)
+        {
+            throw new ResponseException( getProposal(),
+                                         e );
+        }
     }
 
     /** Signal an error response.
@@ -155,6 +195,16 @@ public class DefaultSolicitation
     {
         setStatus( Response.ERROR );
         setPayload( message );
+
+        try
+        {
+            transportResponse();
+        }
+        catch (TransportException e)
+        {
+            throw new ResponseException( getProposal(),
+                                         e );
+        }
     }
 
     /** Set the response status.

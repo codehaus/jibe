@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: LocalTransport.java,v 1.3 2003-07-01 19:13:18 bob Exp $
+ $Id: LocalTransport.java,v 1.4 2003-07-04 22:42:55 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -56,7 +56,7 @@ import java.util.Iterator;
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: LocalTransport.java,v 1.3 2003-07-01 19:13:18 bob Exp $
+ *  @version $Id: LocalTransport.java,v 1.4 2003-07-04 22:42:55 bob Exp $
  */
 public class LocalTransport
     extends ThreadedTransport
@@ -92,6 +92,7 @@ public class LocalTransport
     public synchronized void register(JibeSession session)
         throws TransportException
     {
+        System.err.println( "register( " + session + " )" );
         this.sessions.add( session );
     }
 
@@ -100,6 +101,7 @@ public class LocalTransport
     public synchronized void unregister(JibeSession session)
         throws TransportException
     {
+        System.err.println( "unregister( " + session + " )" );
         while ( this.sessions.remove( session ) )
         {
             // intentionally left blank
@@ -117,24 +119,29 @@ public class LocalTransport
                                         ResponseHandler responseHandler)
         throws TransportException
     {
+        System.err.println( "ENTER distribute proposal" );
         for ( Iterator sessionIter = this.sessions.iterator();
               sessionIter.hasNext(); )
         {
             JibeSession session = (JibeSession) sessionIter.next();
+            
+            System.err.println( this + " " + proposal.getPayload() + " to " + session + " of " + this.sessions );
+            
             DefaultSolicitation solicitation = new DefaultSolicitation( this,
                                                                         proposal );
-
+            
             registerResponseHandler( solicitation,
                                      responseHandler );
-
+            
             SolicitationHandler handler = session.getSolicitationHandler();
-
+            
             if ( handler != null )
             {
                 handle( handler,
                         solicitation );
             }
         }
+        System.err.println( "EXIT distribute proposal" );
     }
 
     /** @see Transport
@@ -144,6 +151,8 @@ public class LocalTransport
                                      Object responsePayload)
         throws TransportException
     {
+        System.err.println( "ENTER repond solicitation" );
+
         ResponseHandler responseHandler = lookupResponseHandler( solicitation );
 
         if ( responseHandler == null )
@@ -157,6 +166,8 @@ public class LocalTransport
         handle( responseHandler,
                 new DefaultResponse( status,
                                      responsePayload ) );
+
+        System.err.println( "EXIT repond solicitation" );
     }
 
     /** @see Transport
@@ -164,6 +175,8 @@ public class LocalTransport
     public synchronized void distribute(Outcome outcome)
         throws TransportException
     {
+        System.err.println( "ENTER distribute outcome" );
+                 
         for ( Iterator sessionIter = this.sessions.iterator();
               sessionIter.hasNext(); )
         {
@@ -177,6 +190,8 @@ public class LocalTransport
                         outcome );
             }
         }
+
+        System.err.println( "EXIT distribute outcome" );
     }
     
 

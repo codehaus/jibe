@@ -22,4 +22,9 @@ public class GroupListMessage
     {
         return (Member[]) this.members.toArray( Member.EMPTY_ARRAY );
     }
+
+    public String toString()
+    {
+        return "[GroupListMessage: members=" + this.members + "]";
+    }
 }

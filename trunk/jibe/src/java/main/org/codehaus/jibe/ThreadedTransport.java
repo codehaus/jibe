@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: ThreadedTransport.java,v 1.2 2003-06-26 13:56:52 bob Exp $
+ $Id: ThreadedTransport.java,v 1.3 2003-07-04 22:42:55 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -54,7 +54,7 @@ package org.codehaus.jibe;
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: ThreadedTransport.java,v 1.2 2003-06-26 13:56:52 bob Exp $
+ *  @version $Id: ThreadedTransport.java,v 1.3 2003-07-04 22:42:55 bob Exp $
  */
 public abstract class ThreadedTransport
     implements Transport
@@ -81,13 +81,18 @@ public abstract class ThreadedTransport
      */
     protected void handle(final SolicitationHandler handler,
                           final Solicitation solicitation)
+        throws TransportException
     {
+        final Barrier barrier = new Barrier();
+
         Thread handlerThread = new Thread()
             {
                 public void run()
                 {
                     try
                     {
+                        barrier.reach();
+                        System.err.println( "solicitationhandler handle solicitation " + solicitation.getProposal().getPayload() );
                         handler.handle( solicitation );
                     }
                     catch (Exception e)
@@ -105,6 +110,16 @@ public abstract class ThreadedTransport
             };
 
         handlerThread.start();
+
+        try
+        {
+            barrier.waitOn();
+        }
+        catch (InterruptedException e)
+        {
+            throw new TransportException( this,
+                                          e );
+        }
     }
 
     /** Handle a <code>Response</code> in a new thread.
@@ -114,29 +129,62 @@ public abstract class ThreadedTransport
      */
     protected void handle(final ResponseHandler responseHandler,
                           final Response response)
+        throws TransportException
     {
+        final Barrier barrier = new Barrier();
+
         Thread handlerThread = new Thread()
             {
                 public void run()
                 {
+                    barrier.reach();
+                    System.err.println( "responsehandler handle resposne " + response.getPayload() );
                     responseHandler.handle( response );
                 }
             };
 
         handlerThread.start();
+
+        try
+        {
+            barrier.waitOn();
+        }
+        catch (InterruptedException e)
+        {
+            throw new TransportException( this,
+                                          e );
+        }
     }
 
     protected void handle(final SolicitationHandler handler,
                           final Outcome outcome)
+        throws TransportException
     {
+        final Barrier barrier = new Barrier();
+
         Thread handlerThread = new Thread()
             {
                 public void run()
                 {
+                    barrier.reach();
+                    System.err.println( "solicitationhandler handle outcome " + outcome.getPayload() );
                     handler.handle( outcome );
                 }
             };
 
         handlerThread.start();
+
+        System.err.println( "waiting on barrier" );
+        try
+        {
+            barrier.waitOn();
+        }
+        catch (InterruptedException e)
+        {
+            throw new TransportException( this,
+                                          e );
+        }
+
+        System.err.println( "done waiting on barrier" );
     }
 }

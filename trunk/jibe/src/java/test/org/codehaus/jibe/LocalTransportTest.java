@@ -15,7 +15,8 @@ public class LocalTransportTest
     {
         LocalTransport transport = new LocalTransport();
 
-        JibeSession session = new JibeSession( transport );
+        JibeSession session = new JibeSession( transport,
+                                               "session"  );
 
         transport.register( session );
 
@@ -25,7 +26,8 @@ public class LocalTransportTest
         assertContains( session,
                         transport.getRegisteredSessions() );
 
-        JibeSession anotherSession = new JibeSession( transport );
+        JibeSession anotherSession = new JibeSession( transport,
+                                                      "sessionToo"  );
 
         transport.register( anotherSession );
 
@@ -56,7 +58,8 @@ public class LocalTransportTest
     {
         LocalTransport transport = new LocalTransport();
 
-        JibeSession responder = new JibeSession( transport );
+        JibeSession responder = new JibeSession( transport,
+                                                 "session" );
 
         MockSolicitationHandler handler = new MockSolicitationHandler();
 

@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: ResponseSet.java,v 1.1.1.1 2003-06-26 04:27:52 bob Exp $
+ $Id: ResponseSet.java,v 1.2 2003-07-04 22:42:55 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -56,7 +56,7 @@ import java.util.Iterator;
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: ResponseSet.java,v 1.1.1.1 2003-06-26 04:27:52 bob Exp $
+ *  @version $Id: ResponseSet.java,v 1.2 2003-07-04 22:42:55 bob Exp $
  */
 public interface ResponseSet
 {
@@ -78,4 +78,6 @@ public interface ResponseSet
      *  @return An iterator over the responses in the set.
      */
     Iterator iterator();
+
+    boolean isTimedOut();
 }

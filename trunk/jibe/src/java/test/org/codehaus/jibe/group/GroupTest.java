@@ -17,10 +17,22 @@ public class GroupTest
         props.setProperty( JibeSessionFactory.SESSION_FACTORY_PROPERTY,
                            LocalSessionFactory.class.getName() );
 
-        Group group = Group.join( "node-1",
+        Group group = Group.join( "node.1",
                                   "cheese",
                                   props );
 
         assertNotNull( group );
+
+        assertTrue( group.isJoining() );
+
+        Thread.sleep( 3000 );
+
+        assertFalse( group.isJoining() );
+
+        assertLength( 1,
+                      group.getMembers() );
+
+        assertEquals( "node.1",
+                      group.getMembers()[0].getId() );
     }
 }

@@ -1,13 +1,13 @@
 package org.codehaus.jibe.group;
 
-public class JoinMessage
+public class JoinedMessage
     extends BaseMessage
 {
     private String nodeId;
     private String groupId;
 
-    public JoinMessage(String nodeId,
-                       String groupId)
+    public JoinedMessage(String nodeId,
+                         String groupId)
     {
         this.nodeId  = nodeId;
         this.groupId = groupId;
@@ -25,7 +25,7 @@ public class JoinMessage
 
     public String toString()
     {
-        return "[JoinMessage: nodeId=" + getNodeId()
+        return "[JoinedMessage: nodeId=" + getNodeId()
             + "; groupId=" + getGroupId()
             + "]";
     }
