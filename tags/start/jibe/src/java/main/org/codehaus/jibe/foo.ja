@@ -1,0 +1,170 @@
+package org.codehaus.jibe;
+
+/*
+ $Id: foo.ja,v 1.1.1.1 2003-06-26 04:27:54 bob Exp $
+
+ Copyright 2003 (C) The Codehaus. All Rights Reserved.
+ 
+ Redistribution and use of this software and associated documentation
+ ("Software"), with or without modification, are permitted provided
+ that the following conditions are met:
+
+ 1. Redistributions of source code must retain copyright
+    statements and notices.  Redistributions must also contain a
+    copy of this document.
+ 
+ 2. Redistributions in binary form must reproduce the
+    above copyright notice, this list of conditions and the
+    following disclaimer in the documentation and/or other
+    materials provided with the distribution.
+ 
+ 3. The name "jibe" must not be used to endorse or promote
+    products derived from this Software without prior written
+    permission of The Codehaus.  For written permission,
+    please contact info@codehaus.org.
+ 
+ 4. Products derived from this Software may not be called "jibe"
+    nor may "jibe" appear in their names without prior written
+    permission of The Codehaus. "jibe" is a registered
+    trademark of The Codehaus.
+ 
+ 5. Due credit should be given to The Codehaus.
+    (http://jibe.codehaus.org/).
+ 
+ THIS SOFTWARE IS PROVIDED BY THE CODEHAUS AND CONTRIBUTORS
+ ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT
+ NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL
+ THE CODEHAUS OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ OF THE POSSIBILITY OF SUCH DAMAGE.
+ 
+ */
+
+import java.util.Properties;
+
+/** Factory for <code>JibeSession</code> instances.
+ *
+ *  @see JibeSession
+ *
+ *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
+ *
+ *  @version $Id: foo.ja,v 1.1.1.1 2003-06-26 04:27:54 bob Exp $
+ */
+public class JibeSessionFactory
+{
+    // ----------------------------------------------------------------------
+    //     Constants
+    // ----------------------------------------------------------------------
+
+    /** Default <code>JibeSession</code> implementation class name. */
+    public static final String DEFAULT_JIBE_SESSION_CLASS_NAME = LocalJibeSession.class.getName();
+
+    /** <code>JibeSession</code> implementation class name property. */
+    public static final String JIBE_SESSION_CLASS_NAME_PROPERTY = JibeSession.class.getName();
+
+    // ----------------------------------------------------------------------
+    //     Class methods
+    // ----------------------------------------------------------------------
+
+    /** Create a new <code>JibeSession</code> using the default
+     *  implementation.
+     *
+     *  @param properties Session initialization properties.
+     *
+     *  @throws SessionException If an error occurs attempting to
+     *          create and initialize the new session.
+     */
+    public static JibeSession newSession(Properties properties)
+        throws SessionException
+    {
+        return newSession( getJibeSessionClassName(),
+                           properties );
+    }
+
+    /** Create a new <code>JibeSession</code> using the default
+     *  implementation.
+     *
+     *  @param sessionClassName Session implementation class name.
+     *  @param properties Session initialization properties.
+     *
+     *  @throws SessionException If an error occurs attempting to
+     *          create and initialize the new session.
+     */
+    public static JibeSession newSession(String sessionClassName,
+                                         Properties properties)
+        throws SessionException
+    {
+        Class sessionClass = getJibeSessionClass( sessionClassName );
+
+        JibeSession session = (JibeSession) sessionClass.newInstance();
+
+        return session;
+    }
+
+    /** Retrieve the effective <code>JibeSession</code>
+     *  implementation class name.
+     *
+     *  <p>
+     *  This method consults the <code>org.codehaus.jibe.JibeSession</code>
+     *  system property, and if non-empty, returns its value.  Otherwise,
+     *  the {@link #DEFAULT_JIBE_SESSION_CLASS_NAME} is returned.
+     *  </p>
+     *
+     *  @return The session implementation class name.
+     */
+    protected static String getJibeSessionClassName()
+    {
+        String className = System.getProperty( JIBE_SESSION_CLASS_NAME_PROPERTY );
+
+        if ( className == null
+             ||
+             className.trim().equals( "" ) )
+        {
+            className = DEFAULT_JIBE_SESSION_CLASS_NAME;
+        }
+
+        return className;
+    }
+
+    /** Retrieve the <code>JibeSession</code> implementation class by name.
+     *
+     *  @param className The class name.
+     *
+     *  @return The session implementation class.
+     *
+     *  @throws SessionException If the class cannot be found or does not
+     *          implement the JibeSession interface.
+     */
+    protected static Class getJibeSessionClass(String className)
+        throws SessionException
+    {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+
+        if ( cl == null )
+        {
+            cl = JibeSessionFactory.class.getClassLoader();
+        }
+
+        try
+        {
+            Class sessionClass = cl.loadClass( className );
+
+            if ( ! JibeSession.class.isAssignableFrom( sessionClass ) )
+            {
+                throw new SessionException( sessionClass.getName() + " does not implement JibeSession" );
+            }
+
+            return sessionClass;
+        }
+        catch (ClassNotFoundException e)
+        {
+            throw new SessionException( e );
+        }
+    }
+}
