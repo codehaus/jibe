@@ -44,6 +44,11 @@ public class ThreadedTransportTest
                 {
                     touched.append( "touched:" + solicitation.getProposal().getPayload() );
                 }
+
+                public void handle(Outcome outcome)
+                {
+                    // nothing
+                }
             } );
 
         Proposal proposal = new Proposal( "cheese" );

@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: Outcome.java,v 1.1.1.1 2003-06-26 04:27:52 bob Exp $
+ $Id: Outcome.java,v 1.2 2003-06-26 13:56:52 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -52,10 +52,21 @@ package org.codehaus.jibe;
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: Outcome.java,v 1.1.1.1 2003-06-26 04:27:52 bob Exp $
+ *  @version $Id: Outcome.java,v 1.2 2003-06-26 13:56:52 bob Exp $
  */
 public interface Outcome
 {
+    // ----------------------------------------------------------------------
+    //     Constants
+    // ----------------------------------------------------------------------
+
+    /** Empty <code>Outcome</code> array. */
+    static final Outcome[] EMPTY_ARRAY = new Outcome[0];
+
+    // ----------------------------------------------------------------------
+    //     Interface
+    // ----------------------------------------------------------------------
+
     /** Retrieve the outcome payload.
      *
      *  @return The outcome payload.

@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: LocalTransport.java,v 1.1.1.1 2003-06-26 04:27:53 bob Exp $
+ $Id: LocalTransport.java,v 1.2 2003-06-26 13:56:52 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -56,7 +56,7 @@ import java.util.Iterator;
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: LocalTransport.java,v 1.1.1.1 2003-06-26 04:27:53 bob Exp $
+ *  @version $Id: LocalTransport.java,v 1.2 2003-06-26 13:56:52 bob Exp $
  */
 public class LocalTransport
     extends ThreadedTransport
@@ -158,6 +158,27 @@ public class LocalTransport
                 new DefaultResponse( status,
                                      responsePayload ) );
     }
+
+    /** @see Transport
+     */
+    public void distribute(Outcome outcome)
+        throws TransportException
+    {
+        for ( Iterator sessionIter = this.sessions.iterator();
+              sessionIter.hasNext(); )
+        {
+            JibeSession session = (JibeSession) sessionIter.next();
+
+            SolicitationHandler handler = session.getSolicitationHandler();
+
+            if ( handler != null )
+            {
+                handle( handler,
+                        outcome );
+            }
+        }
+    }
+    
 
     protected void registerResponseHandler(Solicitation solicitation,
                                            ResponseHandler handler)

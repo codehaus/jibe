@@ -4,6 +4,7 @@ public class MockSolicitationHandler
     implements SolicitationHandler
 {
     private Solicitation solicitation;
+    private Outcome outcome;
 
     public MockSolicitationHandler()
     {
@@ -14,8 +15,18 @@ public class MockSolicitationHandler
         this.solicitation = solicitation;
     }
 
+    public void handle(Outcome outcome)
+    {
+        this.outcome = outcome;
+    }
+
     public Solicitation getSolicitation()
     {
         return this.solicitation;
+    }
+
+    public Outcome getOutcome()
+    {
+        return this.outcome;
     }
 }
