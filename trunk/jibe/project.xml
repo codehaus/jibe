@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+
+
+  <pomVersion>3</pomVersion>
+
+  <name>jibe</name>
+
+
+  <id>jibe</id>
+  <currentVersion>1.0-beta-1</currentVersion>
+  <organization>
+    <name>The Werken Company</name>
+    <url>http://www.werken.com</url>
+    <logo>http://images.werken.com/codehaus-plain.gif</logo>
+  </organization>
+  <inceptionYear>2002</inceptionYear>
+  <package>org.codehaus.jibe</package>
+  <shortDescription>jibe</shortDescription>
+  <logo>http://images.werken.com/jibe.gif</logo>
+
+  <description>
+    jibe is a flexible workflow engine.
+  </description>
+
+  <url>http://jibe.codehaus.org/</url>
+
+  <mailingLists>
+  </mailingLists>
+
+  <siteAddress>jibe.codehaus.org</siteAddress>
+  <siteDirectory>/www/jibe.codehaus.org</siteDirectory>
+  <issueTrackingUrl/>
+
+  <repository>
+    <connection>scm:cvs::pserver:anonymous@cvs.werken.com:/cvsroot/jibe:jibe</connection>
+    <url>http://cvs.werken.com/viewcvs.cgi/?cvsroot=jibe</url>
+  </repository>
+
+  <developers>
+    <developer>
+      <name>bob mcwhirter</name>
+      <id>bob</id>
+      <email>bob@eng.werken.com</email>
+      <organization>The Werken Company</organization>
+      <roles>
+        <role>Founder</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <dependencies>
+
+    <dependency>
+      <id>sysunit</id>
+      <version>1.0-beta-1</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <nagEmailAddress>werkflow-cvs@lists.werken.com</nagEmailAddress>
+    <sourceDirectory>src/java/main</sourceDirectory>
+    <unitTestSourceDirectory>src/java/test</unitTestSourceDirectory>
+    <aspectSourceDirectory/>
+
+    <unitTest>
+      <resources>
+        <resource>
+          <directory>src/java/test</directory>
+          <includes>
+            <include>**/*.xml</include>
+            <include>**/*.txt</include>
+            <include>**/*.html</include>
+            <include>**/*.jibe</include>
+            <include>**/*.properties</include>
+          </includes>
+        </resource>
+      </resources>
+
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+<!--
+      <excludes>
+        <exclude>**/*.java</exclude>
+      </excludes>
+-->
+
+    </unitTest>
+
+    <resources>
+      <resource>
+        <directory>src/java/main</directory>
+        <includes>
+          <include>**/*.properties</include>
+          <include>**/*.xml</include>
+        </includes>
+      </resource>
+    </resources>
+
+  </build>
+</project>
