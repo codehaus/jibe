@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: ThreadedTransport.java,v 1.3 2003-07-04 22:42:55 bob Exp $
+ $Id: ThreadedTransport.java,v 1.4 2003-07-14 20:23:26 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -54,7 +54,7 @@ package org.codehaus.jibe;
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: ThreadedTransport.java,v 1.3 2003-07-04 22:42:55 bob Exp $
+ *  @version $Id: ThreadedTransport.java,v 1.4 2003-07-14 20:23:26 bob Exp $
  */
 public abstract class ThreadedTransport
     implements Transport
@@ -92,7 +92,6 @@ public abstract class ThreadedTransport
                     try
                     {
                         barrier.reach();
-                        System.err.println( "solicitationhandler handle solicitation " + solicitation.getProposal().getPayload() );
                         handler.handle( solicitation );
                     }
                     catch (Exception e)
@@ -138,7 +137,6 @@ public abstract class ThreadedTransport
                 public void run()
                 {
                     barrier.reach();
-                    System.err.println( "responsehandler handle resposne " + response.getPayload() );
                     responseHandler.handle( response );
                 }
             };
@@ -167,14 +165,12 @@ public abstract class ThreadedTransport
                 public void run()
                 {
                     barrier.reach();
-                    System.err.println( "solicitationhandler handle outcome " + outcome.getPayload() );
                     handler.handle( outcome );
                 }
             };
 
         handlerThread.start();
 
-        System.err.println( "waiting on barrier" );
         try
         {
             barrier.waitOn();
@@ -184,7 +180,5 @@ public abstract class ThreadedTransport
             throw new TransportException( this,
                                           e );
         }
-
-        System.err.println( "done waiting on barrier" );
     }
 }
