@@ -1,0 +1,11 @@
+<project default="java:jar">
+
+  <postGoal name="clover">
+    <copy tofile="${basedir}/target/docs/clover/style.css"
+          file="${basedir}/xdocs/stylesheets/clover-style.css"
+          overwrite="true"/>
+    <copy tofile="${basedir}/target/docs/clover/pkgs-summary"
+          file="${basedir}/target/docs/clover/pkgs-summary.html"/>
+  </postGoal>
+
+</project>
