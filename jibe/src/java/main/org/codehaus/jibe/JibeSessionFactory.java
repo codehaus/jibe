@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: JibeSessionFactory.java,v 1.2 2003-07-01 19:13:18 bob Exp $
+ $Id: JibeSessionFactory.java,v 1.3 2003-07-04 22:42:55 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -57,7 +57,7 @@ import java.util.HashMap;
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: JibeSessionFactory.java,v 1.2 2003-07-01 19:13:18 bob Exp $
+ *  @version $Id: JibeSessionFactory.java,v 1.3 2003-07-04 22:42:55 bob Exp $
  */
 public abstract class JibeSessionFactory
 {
@@ -76,6 +76,8 @@ public abstract class JibeSessionFactory
     /** Transport used by the factory. */
     private Transport transport;
 
+    private int counter;
+
 
     // ----------------------------------------------------------------------
     //     Constructors
@@ -85,7 +87,7 @@ public abstract class JibeSessionFactory
      */
     protected JibeSessionFactory()
     {
-        // intentionally left blank
+        this.counter = 0;
     }
 
     // ----------------------------------------------------------------------
@@ -127,7 +129,14 @@ public abstract class JibeSessionFactory
     public JibeSession newSession()
         throws SessionException
     {
-        JibeSession session = new JibeSession( this.transport );
+        return newSession( "session." + (++this.counter) );
+    }
+
+    public JibeSession newSession(String sessionId)
+        throws SessionException
+    {
+        JibeSession session = new JibeSession( this.transport,
+                                               sessionId );
 
         try
         {
@@ -166,7 +175,7 @@ public abstract class JibeSessionFactory
      *  @throws SessionFactoryException If an error occurs while attempting
      *          to load or instantiate the session factory.
      */
-    public static final JibeSessionFactory newSessionFactory(Properties properties)
+    public static synchronized final JibeSessionFactory newSessionFactory(Properties properties)
         throws SessionFactoryException
     {
         String factoryName = properties.getProperty( FACTORY_NAME_PROPERTY );

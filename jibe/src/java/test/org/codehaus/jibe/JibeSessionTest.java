@@ -7,7 +7,8 @@ public class JibeSessionTest
     {
         Transport transport = new MockTransport();
 
-        JibeSession session = new JibeSession( transport );
+        JibeSession session = new JibeSession( transport,
+                                               "session" );
 
         assertSame( transport,
                     session.getTransport() );
@@ -17,7 +18,8 @@ public class JibeSessionTest
     {
         Transport transport = new MockTransport();
 
-        JibeSession session = new JibeSession( transport );
+        JibeSession session = new JibeSession( transport,
+                                               "session"  );
 
         SolicitationHandler handler = new MockSolicitationHandler();
 
@@ -32,7 +34,8 @@ public class JibeSessionTest
     {
         MockTransport transport = new MockTransport();
 
-        JibeSession session = new JibeSession( transport );
+        JibeSession session = new JibeSession( transport,
+                                               "session"  );
 
         Proposal proposal = new Proposal( "cheese" );
 
@@ -49,5 +52,31 @@ public class JibeSessionTest
 
         assertContains( proposal,
                         transport.getDistributed() );
+    }
+
+    public void testPropose_TimeOut()
+        throws Exception
+    {
+        MockTransport transport = new MockTransport();
+
+        JibeSession session = new JibeSession( transport,
+                                               "session"  );
+
+        Proposal proposal = new Proposal( "cheese" );
+
+        Termination termination = new MockTermination( true );
+
+        MockAdjudicator adjudicator = new MockAdjudicator( null );
+
+        session.propose( proposal,
+                         termination,
+                         adjudicator,
+                         1000 );
+
+        Thread.sleep( 1500 );
+
+        ResponseSet responses = adjudicator.getResponses();
+
+        assertTrue( responses.isTimedOut() );
     }
 }

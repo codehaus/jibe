@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: JibeSession.java,v 1.2 2003-07-01 19:13:18 bob Exp $
+ $Id: JibeSession.java,v 1.3 2003-07-04 22:42:55 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -46,6 +46,7 @@ package org.codehaus.jibe;
  
  */
 
+import java.util.Timer;
 
 /** Consensus session.
  *
@@ -57,7 +58,7 @@ package org.codehaus.jibe;
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: JibeSession.java,v 1.2 2003-07-01 19:13:18 bob Exp $
+ *  @version $Id: JibeSession.java,v 1.3 2003-07-04 22:42:55 bob Exp $
  */
 public class JibeSession
 {
@@ -78,6 +79,11 @@ public class JibeSession
     /** Inbound solicitation-handler. */
     private SolicitationHandler solicitationHandler;
 
+    /** Timeout timer. */
+    private Timer timer;
+
+    private String sessionId;
+
     // ----------------------------------------------------------------------
     //     Constructors
     // ----------------------------------------------------------------------
@@ -88,9 +94,12 @@ public class JibeSession
      *
      *  @param transport The messaging transport.
      */
-    JibeSession(Transport transport)
+    JibeSession(Transport transport,
+                String sessionId)
     {
         this.transport = transport;
+        this.timer = new Timer( true );
+        this.sessionId = sessionId;
     }
 
     // ----------------------------------------------------------------------
@@ -104,6 +113,11 @@ public class JibeSession
     Transport getTransport()
     {
         return this.transport;
+    }
+
+    Timer getTimer()
+    {
+        return this.timer;
     }
 
     /** Propose a <code>Proposal</code>.
@@ -137,12 +151,13 @@ public class JibeSession
         InProgressProposal inProgress = new InProgressProposal( this,
                                                                 proposal,
                                                                 termination,
-                                                                adjudicator,
-                                                                timeout );
+                                                                adjudicator );
+
+        getTimer().schedule( new Timeout( inProgress ),
+                             timeout );
 
         getTransport().distribute( proposal,
                                    inProgress );
-
     }
 
     /** Set the <code>SolicitationHandler</code> to handle
@@ -166,5 +181,10 @@ public class JibeSession
     public SolicitationHandler getSolicitationHandler()
     {
         return this.solicitationHandler;
+    }
+
+    public String toString()
+    {
+        return "[JibeSession: sessionId=" + this.sessionId + "]";
     }
 }

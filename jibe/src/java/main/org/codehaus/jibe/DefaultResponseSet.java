@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: DefaultResponseSet.java,v 1.1.1.1 2003-06-26 04:27:56 bob Exp $
+ $Id: DefaultResponseSet.java,v 1.2 2003-07-04 22:42:55 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -57,7 +57,7 @@ import java.util.Iterator;
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: DefaultResponseSet.java,v 1.1.1.1 2003-06-26 04:27:56 bob Exp $
+ *  @version $Id: DefaultResponseSet.java,v 1.2 2003-07-04 22:42:55 bob Exp $
  */
 class DefaultResponseSet
     implements MutableResponseSet
@@ -68,6 +68,9 @@ class DefaultResponseSet
 
     /** Responses. */
     private Set responses;
+
+    /** Timeout flag. */
+    private boolean timedOut;
     
     // ----------------------------------------------------------------------
     //     Constructors
@@ -78,6 +81,7 @@ class DefaultResponseSet
     DefaultResponseSet()
     {
         this.responses = new HashSet();
+        this.timedOut  = false;
     }
 
     // ----------------------------------------------------------------------
@@ -110,6 +114,23 @@ class DefaultResponseSet
     public void add(Response response)
     {
         this.responses.add( response );
+    }
+
+    void setTimedOut()
+    {
+        this.timedOut = true;
+    }
+
+    /** @see ResponseSet
+     */
+    public boolean isTimedOut()
+    {
+        return this.timedOut;
+    }
+
+    public String toString()
+    {
+        return this.responses.toString();
     }
 }
 

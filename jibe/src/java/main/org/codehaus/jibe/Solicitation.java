@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: Solicitation.java,v 1.1.1.1 2003-06-26 04:27:54 bob Exp $
+ $Id: Solicitation.java,v 1.2 2003-07-04 22:42:55 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -56,7 +56,7 @@ package org.codehaus.jibe;
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: Solicitation.java,v 1.1.1.1 2003-06-26 04:27:54 bob Exp $
+ *  @version $Id: Solicitation.java,v 1.2 2003-07-04 22:42:55 bob Exp $
  */
 public interface Solicitation
 {
@@ -81,8 +81,15 @@ public interface Solicitation
      *  @throws ResponseException If an error occurs while
      *          attempting to register the response.
      */
-
     void abstain()
+        throws ResponseException;
+
+    /** Abstain from the solicitation.
+     *
+     *  @throws ResponseException If an error occurs while
+     *          attempting to register the response.
+     */
+    void abstain(Object payload)
         throws ResponseException;
 
     /** Indicate an error response to a solicitation.

@@ -1,7 +1,7 @@
 package org.codehaus.jibe;
 
 /*
- $Id: Adjudicator.java,v 1.1.1.1 2003-06-26 04:27:54 bob Exp $
+ $Id: Adjudicator.java,v 1.2 2003-07-04 22:42:55 bob Exp $
 
  Copyright 2003 (C) The Codehaus. All Rights Reserved.
  
@@ -53,15 +53,17 @@ package org.codehaus.jibe;
  *
  *  @author <a href="mailto:bob@codehaus.org">bob mcwhirter</a>
  *
- *  @version $Id: Adjudicator.java,v 1.1.1.1 2003-06-26 04:27:54 bob Exp $
+ *  @version $Id: Adjudicator.java,v 1.2 2003-07-04 22:42:55 bob Exp $
  */
 public interface Adjudicator
 {
     /** Adjudicate an <code>Outcome</code>.
      *
+     *  @param proposal The proposal.
      *  @param responses The set of responses.
      *
      *  @return The outcome.
      */
-    Outcome adjudicate(ResponseSet responses);
+    Outcome adjudicate(Proposal proposal,
+                       ResponseSet responses);
 }
